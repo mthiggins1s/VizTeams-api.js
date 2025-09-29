@@ -3,11 +3,6 @@ import jwt from 'jsonwebtoken';
 
 const router = express.Router();
 
-// ✅ Sanity check with warning instead of crash
-if (!process.env.JWT_SECRET) {
-  console.warn("⚠️  Warning: JWT_SECRET is not defined in .env");
-}
-
 // Fake login route (replace with real DB later)
 router.post('/login', (req, res) => {
   const { email, password } = req.body;

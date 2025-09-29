@@ -1,6 +1,5 @@
-// Load environment variables before anything else
-import dotenv from 'dotenv';
-dotenv.config();
+// ✅ Auto-load .env before anything else
+import 'dotenv/config';
 
 import express from 'express';
 import cors from 'cors';
