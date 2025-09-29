@@ -24,3 +24,8 @@ app.get('/protected', authMiddleware, (req, res) => {
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+
+// Notes for Matthew
+    // this file is the entry point for the tokens
+    // .env is loaded so the secret is made available
+    // we setup cors() so we can talk to Angular

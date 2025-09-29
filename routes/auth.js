@@ -25,3 +25,8 @@ router.post('/login', (req, res) => {
 });
 
 export default router;
+
+// Notes for Matthew
+    // This is where we login and issue the tokens to users
+    // Since this is just for testing, a hard coded user is created to see if the user is granted a token
+        // whenever a email and password is provided!

@@ -14,3 +14,8 @@ function authMiddleware(req, res, next) {
 }
 
 export default authMiddleware;
+
+// notes for Matthew
+    // This verifies the tokens for protected route usage
+    // if no token is provided, the user cannot visit protected routes
+    // tokens are verified with jwt.verify()
