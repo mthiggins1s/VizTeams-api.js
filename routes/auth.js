@@ -5,28 +5,33 @@ const router = express.Router();
 
 // Fake login route (replace with real DB later)
 router.post('/login', (req, res) => {
-  const { email, password } = req.body;
+  const { username, email, password } = req.body;
+
+  console.log("📥 Incoming login request body:", req.body);
 
   if (!process.env.JWT_SECRET) {
+    console.error("❌ JWT_SECRET is missing from .env");
     return res.status(500).json({ error: "Server misconfigured: JWT_SECRET missing" });
   }
 
+  let tokenUser = null;
+
   // 🚨 Hardcoded demo credentials
   if (email === 'test@example.com' && password === 'password123') {
-    const token = jwt.sign(
-      { id: 1, email },
-      process.env.JWT_SECRET,
-      { expiresIn: '1h' }
-    );
+    tokenUser = { id: 1, email };
+  } else if (username === 'test' && password === 'pass123') {
+    tokenUser = { id: 2, username };
+  }
+
+  if (tokenUser) {
+    console.log("✅ Login success for:", tokenUser);
+
+    const token = jwt.sign(tokenUser, process.env.JWT_SECRET, { expiresIn: '1h' });
     return res.json({ token });
   }
 
+  console.warn("❌ Invalid credentials:", { username, email, password });
   res.status(401).json({ error: 'Invalid credentials' });
 });
 
 export default router;
-
-// Notes for Matthew
-    // This is where we login and issue the tokens to users
-    // Since this is just for testing, a hard coded user is created to see if the user is granted a token
-        // whenever a email and password is provided!
