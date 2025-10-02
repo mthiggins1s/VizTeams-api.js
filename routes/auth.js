@@ -52,3 +52,5 @@ router.post("/signup", (req, res) => {
   console.log("✅ Signup success for:", email);
   res.json({ token });
 });
+
+export default router;
