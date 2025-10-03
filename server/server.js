@@ -4,6 +4,7 @@ import 'dotenv/config';
 import express from 'express';
 import cors from 'cors';
 import bodyParser from 'body-parser';
+import mongoose from 'mongoose';
 import authRoutes from '../routes/auth.js';
 import authMiddleware from '../middleware/authMiddleware.js';
 
@@ -14,6 +15,12 @@ app.use(bodyParser.json());
 // Debug check
 console.log("Loaded JWT_SECRET:", process.env.JWT_SECRET);
 
+// 🔹 Connect to MongoDB Atlas
+const uri = process.env.MONGO_URI;
+mongoose.connect(uri)
+  .then(() => console.log("✅ Connected to MongoDB Atlas"))
+  .catch(err => console.error("❌ MongoDB connection error:", err));
+
 // 🔹 Auth routes (login)
 app.use('/', authRoutes);
 
@@ -23,9 +30,4 @@ app.get('/protected', authMiddleware, (req, res) => {
 });
 
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
-
-// Notes for Matthew
-    // this file is the entry point for the tokens
-    // .env is loaded so the secret is made available
-    // we setup cors() so we can talk to Angular
+app.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));
