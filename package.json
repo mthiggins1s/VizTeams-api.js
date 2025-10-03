@@ -2,7 +2,6 @@
   "name": "vizient-node",
   "version": "1.0.0",
   "description": "",
-  "main": "server/server.js",
   "type": "module",
   "scripts": {
     "start": "node server/server.js",
