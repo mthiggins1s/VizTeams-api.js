@@ -21,7 +21,15 @@ mongoose.connect(uri)
   .then(() => console.log("✅ Connected to MongoDB Atlas"))
   .catch(err => console.error("❌ MongoDB connection error:", err));
 
-// 🔹 Auth routes (login)
+// 🔹 Root route (health check)
+app.get("/", (req, res) => {
+  res.json({
+    message: "Hello from VizTeams API 🚀",
+    mongoStatus: mongoose.connection.readyState === 1 ? "Connected ✅" : "Not Connected ❌"
+  });
+});
+
+// 🔹 Auth routes (login, signup, etc.)
 app.use('/', authRoutes);
 
 // 🔹 Protected route example
