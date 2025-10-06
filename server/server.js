@@ -6,6 +6,7 @@ import cors from 'cors';
 import bodyParser from 'body-parser';
 import mongoose from 'mongoose';
 import authRoutes from '../routes/auth.js';
+import teamRoutes from "../routes/team.js";
 import authMiddleware from '../middleware/authMiddleware.js';
 
 const app = express();
@@ -31,6 +32,7 @@ app.get("/", (req, res) => {
 
 // 🔹 Auth routes (login, signup, etc.)
 app.use('/', authRoutes);
+app.use('/teams', teamRoutes);
 
 // 🔹 Protected route example
 app.get('/protected', authMiddleware, (req, res) => {
