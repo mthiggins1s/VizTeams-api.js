@@ -5,15 +5,15 @@ import dotenv from "dotenv";
 dotenv.config();
 
 // --- 1. Connect to MongoDB ---
-mongoose.connect(process.env.MONGO_URI)
+mongoose
+  .connect(process.env.MONGO_URI)
   .then(() => console.log("✅ Connected to MongoDB"))
-  .catch(err => console.error("❌ Connection error:", err));
+  .catch((err) => console.error("❌ Connection error:", err));
 
 // --- 2. Define your schema ---
-// (adjust fields based on your Excel sheet columns)
 const teamSchema = new mongoose.Schema({
   teamName: String,
-  members: [String],   // or more detailed objects if needed
+  members: [String], // or use [{ name: String, role: String }] later if you want
 });
 
 const Team = mongoose.model("Team", teamSchema);
@@ -25,11 +25,20 @@ const data = XLSX.utils.sheet_to_json(workbook.Sheets[sheetName]);
 
 console.log("📋 Parsed Excel data:", data);
 
-// --- 4. Insert into MongoDB ---
+// --- 4. Transform and insert into MongoDB ---
 async function importData() {
   try {
-    await Team.insertMany(data);
-    console.log("✅ Data successfully inserted!");
+    const formattedData = data.map((row) => ({
+      teamName: row["Team Name"] || row["teamName"],
+      members: row["Members"]
+        ? row["Members"].split(",").map((m) => m.trim())
+        : [],
+    }));
+
+    await Team.deleteMany(); // optional: clears old data
+    await Team.insertMany(formattedData);
+
+    console.log(`✅ Imported ${formattedData.length} records successfully!`);
   } catch (err) {
     console.error("❌ Error inserting data:", err);
   } finally {
