@@ -1,27 +1,14 @@
 import mongoose from "mongoose";
 
-const teamSchema = new mongoose.Schema(
-  {
-    name: {
-      type: String,
-      required: true,
-      trim: true,
-    },
-    description: {
-      type: String,
-      default: "",
-    },
-    members: [
-      {
-        id: String,
-        name: String,
-        role: String,
-        avatarUrl: String,
-      },
-    ],
-  },
-  { timestamps: true }
-);
+const memberSchema = new mongoose.Schema({
+  name: String,
+  title: String,
+});
 
-const Team = mongoose.model("Team", teamSchema);
-export default Team;
+const teamSchema = new mongoose.Schema({
+  teamName: String,
+  description: String,
+  members: [memberSchema],
+});
+
+export default mongoose.model("Team", teamSchema);
