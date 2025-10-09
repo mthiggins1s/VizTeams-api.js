@@ -8,6 +8,9 @@ import mongoose from 'mongoose';
 import authRoutes from '../routes/auth.js';
 import teamRoutes from "../routes/team.js";
 import authMiddleware from '../middleware/authMiddleware.js';
+import picsumRoutes from "../routes/picsum.js";
+import memberRoutes from "../routes/members.js";
+
 
 const app = express();
 app.use(cors());
@@ -33,6 +36,8 @@ app.get("/", (req, res) => {
 // 🔹 Auth routes (login, signup, etc.)
 app.use('/', authRoutes);
 app.use('/teams', teamRoutes);
+app.use("/api", picsumRoutes);
+app.use("/api/members", memberRoutes);
 
 // 🔹 Protected route example
 app.get('/protected', authMiddleware, (req, res) => {
