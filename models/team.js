@@ -3,10 +3,11 @@ import mongoose from "mongoose";
 const memberSchema = new mongoose.Schema({
   name: String,
   title: String,
+  avatarUrl: String,
 });
 
 const teamSchema = new mongoose.Schema({
-  teamName: String,
+  teamName: { type: String, required: true },
   description: String,
   members: [memberSchema],
 });

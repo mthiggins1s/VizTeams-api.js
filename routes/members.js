@@ -1,4 +1,3 @@
-// routes/members.js
 import express from "express";
 import mongoose from "mongoose";
 import Team from "../models/team.js";
@@ -16,13 +15,11 @@ router.post("/", async (req, res) => {
     console.log("🧩 Parsed teamId:", teamId);
     console.log("🧑 Parsed member:", member);
 
-    // 🚨 Validate fields
     if (!teamId || !member?.name || !member?.title) {
       console.warn("⚠️ Missing required fields:", { teamId, member });
       return res.status(400).json({ error: "Missing required fields" });
     }
 
-    // 🧠 Check if team exists
     const team = await Team.findById(teamId);
     if (!team) {
       console.warn(`❌ Team not found for ID: ${teamId}`);
@@ -31,12 +28,11 @@ router.post("/", async (req, res) => {
 
     console.log(`✅ Found team: ${team.teamName} (${team._id})`);
 
-    // 🆕 Create new member (ensure avatarUrl always exists)
     const newMember = {
       _id: new mongoose.Types.ObjectId(),
       name: member.name,
       title: member.title,
-      avatarUrl: member.avatarUrl || "", // ensure always saved
+      avatarUrl: member.avatarUrl || "",
     };
 
     console.log("👤 Adding new member:", newMember);
@@ -45,7 +41,6 @@ router.post("/", async (req, res) => {
     team.members.push(newMember);
     await team.save();
 
-    // 🧾 Fetch fresh updated team
     const updatedTeam = await Team.findById(teamId).lean();
 
     console.log("✅ Successfully added member!");
