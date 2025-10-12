@@ -1,4 +1,3 @@
-// routes/members.js
 import express from "express";
 import mongoose from "mongoose";
 import Team from "../models/team.js";
