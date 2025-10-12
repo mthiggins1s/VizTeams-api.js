@@ -35,7 +35,7 @@ app.get("/", (req, res) => {
 
 // 🔹 Auth routes (login, signup, etc.)
 app.use('/', authRoutes);
-app.use('/teams', teamRoutes);
+app.use('/api/teams', teamRoutes);
 app.use("/api", picsumRoutes);
 app.use("/api/members", memberRoutes);
 
