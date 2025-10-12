@@ -60,36 +60,3 @@ export const deleteTeam = async (req, res) => {
     res.status(500).json({ error: "Failed to delete team" });
   }
 };
-
-/** POST: add a member to a team */
-export const addMember = async (req, res) => {
-  try {
-    const { teamId, member } = req.body; // ✅ match frontend payload
-
-    if (!teamId || !member || !member.name || !member.title) {
-      return res.status(400).json({ error: "Missing required member fields" });
-    }
-
-    const team = await Team.findById(teamId);
-    if (!team) return res.status(404).json({ error: "Team not found" });
-
-    const newMember = {
-      name: member.name.trim(),
-      title: member.title.trim(),
-      avatarUrl: member.avatarUrl?.trim() || "/avatar.png",
-    };
-
-    team.members.push(newMember);
-    await team.save();
-
-    console.log(`✅ Member ${member.name} added to ${team.teamName}`);
-
-    res.status(201).json({
-      message: "Member added successfully",
-      team,
-    });
-  } catch (err) {
-    console.error("❌ Error adding member:", err);
-    res.status(500).json({ error: "Failed to add member" });
-  }
-};

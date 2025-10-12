@@ -1,3 +1,4 @@
+// ✅ Auto-load .env before anything else
 import 'dotenv/config';
 
 import express from 'express';
@@ -34,10 +35,9 @@ app.get("/", (req, res) => {
 
 // 🔹 Auth routes (login, signup, etc.)
 app.use('/', authRoutes);
-app.use('/api/teams', teamRoutes);
+app.use('/teams', teamRoutes);
+app.use("/api", picsumRoutes);
 app.use("/api/members", memberRoutes);
-app.use("/api/photos", picsumRoutes);
-
 
 // 🔹 Protected route example
 app.get('/protected', authMiddleware, (req, res) => {

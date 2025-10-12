@@ -3,8 +3,8 @@ import axios from "axios";
 
 const router = express.Router();
 
-// ✅ Correct: define only `/` here
-router.get("/", async (req, res) => {
+// Proxy endpoint for Picsum photos
+router.get("/photos", async (req, res) => {
   try {
     const response = await axios.get("https://picsum.photos/v2/list?limit=100");
     res.json(response.data);
