@@ -11,7 +11,7 @@ import {
 const router = express.Router();
 
 // Routes
-router.get("/", getTeams); // public
+router.get("/", getTeams);
 router.post("/", authMiddleware, createTeam);
 router.put("/:id", authMiddleware, updateTeam);
 router.delete("/:id", authMiddleware, deleteTeam);
