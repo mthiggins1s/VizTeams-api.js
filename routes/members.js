@@ -93,7 +93,9 @@ router.put("/:teamId/members/:memberId", async (req, res) => {
     }
 
     // 🧱 Update member fields
-    const fullName = `${firstName?.trim() || ""} ${lastName?.trim() || ""}`.trim();
+    const fullName = `${firstName?.trim() || ""} ${
+      lastName?.trim() || ""
+    }`.trim();
     team.members[memberIndex].name = fullName;
     team.members[memberIndex].title = title;
     team.members[memberIndex].avatarUrl = avatarUrl || "";
@@ -107,6 +109,47 @@ router.put("/:teamId/members/:memberId", async (req, res) => {
     console.error("❌ Error updating member:", err.message);
     console.error(err.stack);
     res.status(500).json({ error: "Failed to update member" });
+  }
+});
+
+/* -------------------------------------------------------------------------- */
+/* 🗑️ DELETE: Remove an existing member from a specific team                  */
+/* -------------------------------------------------------------------------- */
+router.delete("/:teamId/members/:memberId", async (req, res) => {
+  try {
+    console.log("🔴 [DELETE] /api/members/:teamId/members/:memberId hit!");
+    const { teamId, memberId } = req.params;
+
+    if (!teamId || !memberId) {
+      console.warn("⚠️ Missing teamId or memberId:", { teamId, memberId });
+      return res.status(400).json({ error: "Missing teamId or memberId" });
+    }
+
+    // 🧠 Find the team
+    const team = await Team.findById(teamId);
+    if (!team) {
+      console.warn(`❌ Team not found for ID: ${teamId}`);
+      return res.status(404).json({ error: "Team not found" });
+    }
+
+    const initialCount = team.members.length;
+    team.members = team.members.filter((m) => m._id.toString() !== memberId);
+
+    if (team.members.length === initialCount) {
+      console.warn(`⚠️ Member not found in team: ${memberId}`);
+      return res.status(404).json({ error: "Member not found" });
+    }
+
+    await team.save();
+
+    console.log("✅ Member removed successfully:", memberId);
+    return res
+      .status(200)
+      .json({ message: "Member removed", teamId, memberId });
+  } catch (err) {
+    console.error("❌ Error removing member:", err.message);
+    console.error(err.stack);
+    return res.status(500).json({ error: "Failed to remove member" });
   }
 });
 
