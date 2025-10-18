@@ -90,4 +90,8 @@ export const addMember = async (req, res) => {
     console.error("❌ Error adding member:", err);
     res.status(500).json({ error: "Failed to add member" });
   }
+
+  if (team.members.some(m => m.name === `${firstName} ${lastName}`)) {
+  return res.status(400).json({ error: "Member already exists" });
+}
 };
