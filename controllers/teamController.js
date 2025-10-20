@@ -95,3 +95,55 @@ export const addMember = async (req, res) => {
   return res.status(400).json({ error: "Member already exists" });
 }
 };
+
+/** POST: move an existing member from one team to another (optionally to a specific index) */
+export const moveMember = async (req, res) => {
+  try {
+    const { memberId, fromTeamId, toTeamId, toIndex } = req.body || {};
+
+    if (!memberId || !fromTeamId || !toTeamId) {
+      return res
+        .status(400)
+        .json({ error: "memberId, fromTeamId and toTeamId are required" });
+    }
+
+    if (fromTeamId === toTeamId) {
+      // Moving within same team should be handled by reorder endpoint
+      return res.status(400).json({ error: "Use reorder for intra-team moves" });
+    }
+
+    const fromTeam = await Team.findById(fromTeamId);
+    if (!fromTeam) return res.status(404).json({ error: "Source team not found" });
+
+    const memberIdx = fromTeam.members.findIndex(
+      (m) => m._id?.toString() === String(memberId)
+    );
+    if (memberIdx === -1) return res.status(404).json({ error: "Member not in source team" });
+
+    // Remove from source
+    const [member] = fromTeam.members.splice(memberIdx, 1);
+    await fromTeam.save();
+
+    // Add to destination
+    const toTeam = await Team.findById(toTeamId);
+    if (!toTeam) return res.status(404).json({ error: "Destination team not found" });
+
+    const insertIndex = Number.isInteger(toIndex)
+      ? Math.max(0, Math.min(Number(toIndex), toTeam.members.length))
+      : toTeam.members.length;
+
+    toTeam.members.splice(insertIndex, 0, member);
+    await toTeam.save();
+
+    // Return both updated teams to allow client to refresh local state
+    const [fromTeamFresh, toTeamFresh] = await Promise.all([
+      Team.findById(fromTeamId).lean(),
+      Team.findById(toTeamId).lean(),
+    ]);
+
+    return res.status(200).json({ fromTeam: fromTeamFresh, toTeam: toTeamFresh });
+  } catch (err) {
+    console.error("❌ Error moving member:", err);
+    return res.status(500).json({ error: "Failed to move member" });
+  }
+};
