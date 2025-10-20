@@ -6,6 +6,7 @@ import {
   updateTeam,
   deleteTeam,
   addMember,
+  moveMember,
 } from "../controllers/teamController.js";
 import Team from "../models/team.js";
 
@@ -16,6 +17,7 @@ router.post("/", authMiddleware, createTeam);
 router.put("/:id", authMiddleware, updateTeam);
 router.delete("/:id", authMiddleware, deleteTeam);
 router.post("/add-member", authMiddleware, addMember);
+router.post("/move-member", authMiddleware, moveMember);
 
 /* 🆕 PUT: Reorder team members */
 router.put("/:id/reorder", authMiddleware, async (req, res) => {
